@@ -64,7 +64,7 @@
   <section id="about">
     <div class="container">
       <div class="section-label">
-        <span>01 — About</span>
+        <span>About</span>
       </div>
       <div class="about-layout">
         <div class="about-left">
@@ -96,10 +96,6 @@
           </div>
         </div>
         <div class="about-right">
-          <div class="photo-frame">
-            <img src="desk.jpg" alt="My workspace" loading="lazy">
-            <div class="photo-glow"></div>
-          </div>
           <div class="skills-cloud">
             <span class="skill" style="--d:0s">COBOL</span>
             <span class="skill" style="--d:.07s">JCL</span>
@@ -125,7 +121,7 @@
   <section id="experience">
     <div class="container">
       <div class="section-label">
-        <span>02 — Experience</span>
+        <span>Experience</span>
       </div>
       <h2 class="section-heading">Career journey</h2>
 
@@ -138,10 +134,6 @@
         <div class="ach-item">
           <span class="ach-num">9+</span>
           <span class="ach-desc">years Mainframe expertise</span>
-        </div>
-        <div class="ach-item">
-          <span class="ach-num">99%+</span>
-          <span class="ach-desc">SLA compliance maintained</span>
         </div>
         <div class="ach-item">
           <span class="ach-num">$M+</span>
@@ -234,7 +226,7 @@
   <section id="contact">
     <div class="container">
       <div class="section-label">
-        <span>03 — Contact</span>
+        <span>Contact</span>
       </div>
       <div class="contact-layout">
         <div class="contact-left">
@@ -317,7 +309,8 @@
     /* ── Particle canvas ── */
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
-    let W, H, particles = [], mouse = { x: -9999, y: -9999 };
+    const MOUSE_OUT = -9999;
+    let W, H, particles = [], mouse = { x: MOUSE_OUT, y: MOUSE_OUT };
     const N = 90, CONNECT = 130;
 
     function resize() {
@@ -335,10 +328,15 @@
       r: Math.random() * 2 + 1,
     });
 
-    canvas.addEventListener('mousemove', e => {
+    document.addEventListener('mousemove', e => {
       const r = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - r.left;
-      mouse.y = e.clientY - r.top;
+      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        mouse.x = e.clientX - r.left;
+        mouse.y = e.clientY - r.top;
+      } else {
+        mouse.x = MOUSE_OUT;
+        mouse.y = MOUSE_OUT;
+      }
     });
 
     function drawParticles() {
