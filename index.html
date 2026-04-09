@@ -732,9 +732,15 @@
     }
 
     /* ── Render blog planets ── */
+    function hideBlogEverywhere() {
+      document.getElementById('blog').style.display = 'none';
+      const blogNavLink = document.querySelector('#navLinks a[href="#blog"]');
+      if (blogNavLink) blogNavLink.closest('li').style.display = 'none';
+    }
+
     function renderBlog() {
       if (!BLOG_SECTION_ENABLED) {
-        document.getElementById('blog').style.display = 'none';
+        hideBlogEverywhere();
         return;
       }
 
@@ -743,7 +749,7 @@
 
       const activePosts = BLOG_POSTS.filter(p => p.enabled);
       if (activePosts.length === 0) {
-        wrapper.innerHTML = '<p style="color:var(--text-muted);font-family:var(--mono);font-size:0.82rem;">No posts yet. Check back soon.</p>';
+        hideBlogEverywhere();
         return;
       }
 
