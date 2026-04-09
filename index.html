@@ -316,6 +316,12 @@
   (() => {
     'use strict';
 
+    /* ══════════════════════════════════════════════════
+       BLOG MASTER SWITCH — set to false to hide the entire
+       blog section without removing any code.
+    ══════════════════════════════════════════════════ */
+    const BLOG_SECTION_ENABLED = true;
+
     /* ── Typed text ── */
     const phrases = [
       'legacy & cloud together.',
@@ -542,10 +548,9 @@
 
     /* ══════════════════════════════════════════════════
        BLOG — Planet-style blog section
-       To disable the entire blog section, set BLOG_SECTION_ENABLED = false.
+       Master switch is at the top of this script.
        Each post has its own `enabled` flag for per-post control.
     ══════════════════════════════════════════════════ */
-    const BLOG_SECTION_ENABLED = true;
 
     const BLOG_POSTS = [
       {
@@ -597,6 +602,9 @@
     function countWords(htmlStr) {
       return htmlStr.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
     }
+
+    /* Pre-compute and cache word counts on each post object */
+    BLOG_POSTS.forEach(post => { post._wordCount = countWords(post.content); });
 
     function planetSize(wordCount) {
       const MIN_SIZE = 80, MAX_SIZE = 165, MIN_W = 80, MAX_W = 900;
@@ -740,7 +748,7 @@
       }
 
       activePosts.forEach(post => {
-        const wordCount = countWords(post.content);
+        const wordCount = post._wordCount;
         const diam = planetSize(wordCount);
         const date = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -780,7 +788,7 @@
       /* re-run reveal on new elements */
       wrapper.querySelectorAll('.reveal').forEach(el => {
         el.classList.remove('reveal');
-        void el.offsetWidth;
+        void el.offsetWidth; // force reflow to restart CSS animation
         el.classList.add('reveal');
         io.observe(el);
       });
@@ -792,7 +800,7 @@
     const modalContent = document.getElementById('blogModalContent');
 
     function openPost(post) {
-      const wordCount = countWords(post.content);
+      const wordCount = post._wordCount;
       const date = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       modalContent.innerHTML = `
         <div class="blog-post-header">
