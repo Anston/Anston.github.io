@@ -11,15 +11,14 @@
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-trail" id="cursorTrail"></div>
+  <!-- Solar system cursor -->
+  <canvas id="solarCursor"></canvas>
 
   <!-- Navigation -->
   <nav id="nav">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo">
-        <img src="https://github.com/user-attachments/assets/573ded3b-055b-4b84-9111-2b258570aef8" alt="Shawn Anston logo" class="nav-logo-img">
+        <img src="bw.png" alt="Shawn Anston logo" class="nav-logo-img">
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" data-text="About">About</a></li>
@@ -37,6 +36,7 @@
   <section id="hero">
     <canvas id="particleCanvas"></canvas>
     <div class="hero-content">
+      <img src="bw.png" alt="Shawn Anston logo" class="hero-logo">
       <div class="hero-tag">
         <span class="tag-dot"></span>
         Open to new opportunities · H1B · Carrollton, TX
@@ -378,29 +378,89 @@
     }
     drawParticles();
 
-    /* ── Custom cursor (desktop only) ── */
-    const cursor = document.getElementById('cursor');
-    const trail  = document.getElementById('cursorTrail');
-    let tx = 0, ty = 0, cx = 0, cy = 0;
+    /* ── Solar system cursor (desktop only) ── */
+    const solarCanvas = document.getElementById('solarCursor');
+    const sctx = solarCanvas.getContext('2d');
+
+    function resizeSolar() {
+      solarCanvas.width  = window.innerWidth;
+      solarCanvas.height = window.innerHeight;
+    }
+    resizeSolar();
+    window.addEventListener('resize', resizeSolar);
+
+    let stx = window.innerWidth / 2, sty = window.innerHeight / 2;
+    let scx = stx, scy = sty;
+    let earthAngle = 0;
+    const ORBIT_R   = 24;   // earth orbit radius px
+    const ORBIT_SPD = 0.06; // radians per frame
+    const SUN_R     = 9;
+    const EARTH_R   = 5;
+    let isHover = false;
 
     if (window.matchMedia('(pointer: fine)').matches) {
-      document.addEventListener('mousemove', e => {
-        tx = e.clientX; ty = e.clientY;
-        cursor.style.transform = `translate(${tx - 6}px, ${ty - 6}px)`;
-      });
+      document.addEventListener('mousemove', e => { stx = e.clientX; sty = e.clientY; });
       document.querySelectorAll('a, button, [tabindex]').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        el.addEventListener('mouseenter', () => { isHover = true; });
+        el.addEventListener('mouseleave', () => { isHover = false; });
       });
-      (function animTrail() {
-        cx += (tx - cx) * 0.12;
-        cy += (ty - cy) * 0.12;
-        trail.style.transform = `translate(${cx - 18}px, ${cy - 18}px)`;
-        requestAnimationFrame(animTrail);
+
+      (function animSolar() {
+        // lerp sun toward mouse – same 0.12 physics as old trail
+        scx += (stx - scx) * 0.12;
+        scy += (sty - scy) * 0.12;
+
+        // advance earth orbit
+        earthAngle += isHover ? ORBIT_SPD * 2 : ORBIT_SPD;
+
+        sctx.clearRect(0, 0, solarCanvas.width, solarCanvas.height);
+
+        // ── orbit ring ──
+        sctx.beginPath();
+        sctx.arc(scx, scy, ORBIT_R, 0, Math.PI * 2);
+        sctx.strokeStyle = 'rgba(255,220,80,0.18)';
+        sctx.lineWidth = 1;
+        sctx.stroke();
+
+        // ── sun glow ──
+        const sunGlow = sctx.createRadialGradient(scx, scy, 0, scx, scy, SUN_R * 2.5);
+        sunGlow.addColorStop(0,   'rgba(255,240,100,0.9)');
+        sunGlow.addColorStop(0.5, 'rgba(255,160,30,0.6)');
+        sunGlow.addColorStop(1,   'rgba(255,100,0,0)');
+        sctx.beginPath();
+        sctx.arc(scx, scy, SUN_R * 2.5, 0, Math.PI * 2);
+        sctx.fillStyle = sunGlow;
+        sctx.fill();
+
+        // ── sun core ──
+        sctx.beginPath();
+        sctx.arc(scx, scy, SUN_R, 0, Math.PI * 2);
+        sctx.fillStyle = '#ffd040';
+        sctx.fill();
+
+        // ── earth position ──
+        const ex = scx + Math.cos(earthAngle) * ORBIT_R;
+        const ey = scy + Math.sin(earthAngle) * ORBIT_R;
+
+        // ── earth glow ──
+        const earthGlow = sctx.createRadialGradient(ex, ey, 0, ex, ey, EARTH_R * 2.5);
+        earthGlow.addColorStop(0,   'rgba(80,200,255,0.8)');
+        earthGlow.addColorStop(1,   'rgba(30,100,255,0)');
+        sctx.beginPath();
+        sctx.arc(ex, ey, EARTH_R * 2.5, 0, Math.PI * 2);
+        sctx.fillStyle = earthGlow;
+        sctx.fill();
+
+        // ── earth core ──
+        sctx.beginPath();
+        sctx.arc(ex, ey, EARTH_R, 0, Math.PI * 2);
+        sctx.fillStyle = '#55bbff';
+        sctx.fill();
+
+        requestAnimationFrame(animSolar);
       })();
     } else {
-      cursor.style.display = 'none';
-      trail.style.display  = 'none';
+      solarCanvas.style.display = 'none';
     }
 
     /* ── Scroll-reveal ── */
