@@ -1,21 +1,460 @@
 <!DOCTYPE html>
-<html style="background: url(desk.jpg) no-repeat center center fixed; 
--webkit-background-size: cover;
--moz-background-size: cover;
--o-background-size: cover;
-background-size: cover;"> 
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Shawn A</title>
-<link rel="stylesheet" href="css/style.css">
-<script src="js/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shawn Anston</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-  
 <body>
-<div class="book-container" src="pdf/Notebook.pdf"></div>
-<center>Work in progress!</center>
-<script src="js/three.min.js"></script>
-<script src="js/pdf.min.js"></script>
-<script src="js/3dflipbook.min.js"></script>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+
+  <!-- Navigation -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>SA<span class="logo-bracket">/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about" data-text="About">About</a></li>
+        <li><a href="#experience" data-text="Experience">Experience</a></li>
+        <li><a href="#contact" data-text="Contact">Contact</a></li>
+        <li><a href="pdf/Notebook.pdf" target="_blank" rel="noopener" class="nav-resume" aria-label="Resume (opens in new tab)">Resume ↗</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section id="hero">
+    <canvas id="particleCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="tag-dot"></span>
+        Open to new opportunities · H1B · Carrollton, TX
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">Hi, I'm</span>
+        <span class="title-name">Shawn<br>Anston.</span>
+      </h1>
+      <p class="hero-sub">
+        I bridge <span class="typed-text" id="typedText"></span><span class="typed-cursor">|</span>
+      </p>
+      <div class="hero-actions">
+        <a href="#experience" class="btn-glow">See My Experience</a>
+        <a href="#contact" class="btn-ghost">Let's Talk</a>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">
+        <div class="scroll-line"></div>
+        <span>scroll</span>
+      </div>
+    </div>
+    <div class="hero-grid-overlay" aria-hidden="true"></div>
+  </section>
+
+  <!-- ─── ABOUT ─── -->
+  <section id="about">
+    <div class="container">
+      <div class="section-label">
+        <span>01 — About</span>
+      </div>
+      <div class="about-layout">
+        <div class="about-left">
+          <h2 class="section-heading">A bit about me</h2>
+          <p>
+            I'm a Mainframe Systems Analyst with 9+ years of experience bridging legacy infrastructure
+            and modern cloud architecture. I specialize in COBOL, DB2, CICS, and IMS, with proven
+            success delivering cost-saving Kaizen initiatives and leading cross-functional teams across
+            onsite and offshore models.
+          </p>
+          <p>
+            From automating CA7 job monitoring with REXX to migrating monolithic apps to AWS microservices,
+            I'm driven by the challenge of making complex systems simpler, faster, and future-proof.
+            AWS Certified Cloud Practitioner. Based in Carrollton, Texas.
+          </p>
+          <div class="about-stats">
+            <div class="stat">
+              <span class="stat-number" data-target="9">0</span><span class="stat-plus">+</span>
+              <span class="stat-label">Years experience</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number" data-target="97">0</span><span class="stat-plus">%</span>
+              <span class="stat-label">Efficiency gained</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number" data-target="99">0</span><span class="stat-plus">%+</span>
+              <span class="stat-label">SLA compliance</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-right">
+          <div class="photo-frame">
+            <img src="desk.jpg" alt="My workspace" loading="lazy">
+            <div class="photo-glow"></div>
+          </div>
+          <div class="skills-cloud">
+            <span class="skill" style="--d:0s">COBOL</span>
+            <span class="skill" style="--d:.07s">JCL</span>
+            <span class="skill" style="--d:.14s">DB2 SQL</span>
+            <span class="skill" style="--d:.21s">CICS</span>
+            <span class="skill" style="--d:.28s">IMS DB</span>
+            <span class="skill" style="--d:.35s">REXX</span>
+            <span class="skill" style="--d:.42s">VSAM</span>
+            <span class="skill" style="--d:.49s">IBM Z/OS</span>
+            <span class="skill" style="--d:.56s">AWS</span>
+            <span class="skill" style="--d:.63s">Microservices</span>
+            <span class="skill" style="--d:.70s">ServiceNow</span>
+            <span class="skill" style="--d:.77s">Jira</span>
+            <span class="skill" style="--d:.84s">Agile/Scrum</span>
+            <span class="skill" style="--d:.91s">Kaizen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── EXPERIENCE ─── -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-label">
+        <span>02 — Experience</span>
+      </div>
+      <h2 class="section-heading">Career journey</h2>
+
+      <!-- Key achievements banner -->
+      <div class="achievements-banner">
+        <div class="ach-item">
+          <span class="ach-num">97%</span>
+          <span class="ach-desc">efficiency gain via REXX automation</span>
+        </div>
+        <div class="ach-item">
+          <span class="ach-num">9+</span>
+          <span class="ach-desc">years Mainframe expertise</span>
+        </div>
+        <div class="ach-item">
+          <span class="ach-num">99%+</span>
+          <span class="ach-desc">SLA compliance maintained</span>
+        </div>
+        <div class="ach-item">
+          <span class="ach-num">$M+</span>
+          <span class="ach-desc">saved via Kaizen CPU optimization</span>
+        </div>
+      </div>
+
+      <!-- Experience timeline -->
+      <div class="exp-timeline">
+
+        <article class="exp-card">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">System Analyst</h3>
+              <p class="exp-company">Tech Mahindra &middot; Automotive Industry Client</p>
+            </div>
+            <span class="exp-date">May 2022 &ndash; Jan 2026</span>
+          </div>
+          <p class="exp-location">United States</p>
+          <p class="exp-summary">
+            Led requirements gathering and analysis for Order Management and Shipment Tracking Systems serving global operations.
+            Acted as primary technical liaison between onsite stakeholders and offshore Mainframe teams.
+            Coordinated cross-functional Mainframe, Java, and Angular developers for integrated solution delivery.
+          </p>
+          <ul class="exp-achievements">
+            <li>Enabled team to leverage generative AI for day-to-day Mainframe codebase activities, enhancing workflow efficiency</li>
+            <li>Led cloud migration of multiple on-premise applications to AWS infrastructure</li>
+            <li>Designed and documented migration strategy converting monolithic Java APIs into microservices architecture</li>
+            <li>Enhanced Shipment Tracking System to support consigned inventory tracking at external warehouse locations</li>
+          </ul>
+          <ul class="fp-stack">
+            <li>COBOL</li><li>JCL</li><li>AWS</li><li>Java Microservices</li><li>Jira</li><li>Agile</li>
+          </ul>
+        </article>
+
+        <article class="exp-card">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">Software Engineer</h3>
+              <p class="exp-company">Tech Mahindra &middot; Automotive Industry Client</p>
+            </div>
+            <span class="exp-date">Oct 2017 &ndash; May 2022</span>
+          </div>
+          <p class="exp-location">Chennai Area, India &middot; 4 yrs 8 mos.</p>
+          <p class="exp-summary">
+            Provided production support for critical Inventory Control System supporting manufacturing operations.
+            Managed incident resolution via ServiceNow achieving 99%+ SLA compliance.
+            Led Kaizen continuous improvement initiatives optimizing JCL batch processes and SQL programs.
+          </p>
+          <ul class="exp-achievements">
+            <li>Spearheaded Kaizen initiatives reducing CPU utilization — saving millions in annual operational costs via JCL &amp; SQL optimization</li>
+            <li>Developed REXX automation module for CA7 job scheduler monitoring, cutting manual tracking from 30 minutes to under 1 minute (97% improvement)</li>
+            <li>Led Endevor to ISPW migration with comprehensive testing, documentation, and zero production incidents</li>
+            <li>Enhanced Shipment Tracking System integrating Angular frontend with Mainframe COBOL backend and stored procedures</li>
+          </ul>
+          <ul class="fp-stack">
+            <li>COBOL</li><li>DB2</li><li>REXX</li><li>JCL</li><li>ServiceNow</li><li>CA7</li>
+          </ul>
+        </article>
+
+        <article class="exp-card">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">Associate Software Engineer</h3>
+              <p class="exp-company">Tech Mahindra &middot; Automotive Industry Client</p>
+            </div>
+            <span class="exp-date">Aug 2016 &ndash; Oct 2017</span>
+          </div>
+          <p class="exp-location">Chennai Area, India &middot; 1 yr 3 mos.</p>
+          <p class="exp-summary">
+            Completed comprehensive Mainframe development training in COBOL, JCL, DB2, CICS, and IMS DB.
+            Executed multi-year IMS to DB2 database migration converting IMS DB calls to DB2 SQL.
+            Developed COBOL programs and stored procedures for the new Shipment Tracking System.
+          </p>
+          <ul class="exp-achievements">
+            <li>Successfully converted multiple IMS databases to DB2, improving system performance and maintainability</li>
+            <li>Documented and decommissioned obsolete legacy components, reducing technical debt across the codebase</li>
+            <li>Contributed to Shipment Tracking System connecting Mainframe backend with Angular frontend</li>
+          </ul>
+          <ul class="fp-stack">
+            <li>COBOL</li><li>IMS DB</li><li>DB2</li><li>CICS</li><li>TSO/ISPF</li><li>Endevor</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─── -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-label">
+        <span>03 — Contact</span>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-left">
+          <h2 class="section-heading">Let's connect<br>and build together.</h2>
+          <p>
+            Open to new opportunities in Mainframe systems, cloud migration, or technical leadership.
+            Whether you have a role in mind or just want to connect — I'd love to hear from you.
+          </p>
+          <a href="mailto:shawn.anston@gmail.com" class="btn-glow contact-btn">
+            Send a message ↗
+          </a>
+        </div>
+        <div class="contact-right">
+          <div class="contact-card">
+            <h3>Find me on</h3>
+            <ul class="contact-list">
+              <li>
+                <a href="https://github.com/Anston" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24" width="20" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                  <span>GitHub</span>
+                  <span class="link-arrow">↗</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/shawn-anston-2725a365" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24" width="20" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  <span>LinkedIn</span>
+                  <span class="link-arrow">↗</span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:shawn.anston@gmail.com">
+                  <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                  <span>shawn.anston@gmail.com</span>
+                  <span class="link-arrow">↗</span>
+                </a>
+              </li>
+              <li>
+                <a href="pdf/Notebook.pdf" target="_blank">
+                  <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                  <span>Resume / CV</span>
+                  <span class="link-arrow">↗</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span>Designed &amp; Built by Shawn Anston</span>
+    <span class="footer-dot">·</span>
+    <span id="footerYear"></span>
+  </footer>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ── Typed text ── */
+    const phrases = [
+      'legacy & cloud together.',
+      'Mainframe into the future.',
+      'COBOL to AWS solutions.',
+      'complex systems simply.',
+    ];
+    const el = document.getElementById('typedText');
+    let pi = 0, ci = 0, deleting = false;
+    function type() {
+      const phrase = phrases[pi];
+      el.textContent = deleting ? phrase.slice(0, ci--) : phrase.slice(0, ci++);
+      if (!deleting && ci > phrase.length) { deleting = true; setTimeout(type, 1800); return; }
+      if (deleting && ci < 0)             { deleting = false; pi = (pi + 1) % phrases.length; ci = 0; }
+      setTimeout(type, deleting ? 45 : 80);
+    }
+    type();
+
+    /* ── Particle canvas ── */
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = { x: -9999, y: -9999 };
+    const N = 90, CONNECT = 130;
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    for (let i = 0; i < N; i++) particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2 + 1,
+    });
+
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+    });
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+        // mouse repulsion
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) { p.x += dx / dist * 1.5; p.y += dy / dist * 1.5; }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(120,200,255,0.6)';
+        ctx.fill();
+      });
+
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
+          if (d < CONNECT) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(100,180,255,${0.18 * (1 - d / CONNECT)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+
+    /* ── Custom cursor (desktop only) ── */
+    const cursor = document.getElementById('cursor');
+    const trail  = document.getElementById('cursorTrail');
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.addEventListener('mousemove', e => {
+        tx = e.clientX; ty = e.clientY;
+        cursor.style.transform = `translate(${tx - 6}px, ${ty - 6}px)`;
+      });
+      document.querySelectorAll('a, button, [tabindex]').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+      });
+      (function animTrail() {
+        cx += (tx - cx) * 0.12;
+        cy += (ty - cy) * 0.12;
+        trail.style.transform = `translate(${cx - 18}px, ${cy - 18}px)`;
+        requestAnimationFrame(animTrail);
+      })();
+    } else {
+      cursor.style.display = 'none';
+      trail.style.display  = 'none';
+    }
+
+    /* ── Scroll-reveal ── */
+    const reveals = document.querySelectorAll('.about-layout, .achievements-banner, .exp-card, .contact-layout, .stat');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => { el.classList.add('reveal'); io.observe(el); });
+
+    /* ── Animated counters ── */
+    const counters = document.querySelectorAll('.stat-number');
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const target = +e.target.dataset.target;
+        let current = 0;
+        const step = Math.ceil(target / 40);
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          e.target.textContent = current;
+          if (current >= target) clearInterval(timer);
+        }, 35);
+        cio.unobserve(e.target);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => cio.observe(c));
+
+    /* ── Sticky nav ── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('solid', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Hamburger ── */
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    function toggleNav() {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      links.classList.toggle('open');
+    }
+    toggle.addEventListener('click', toggleNav);
+    toggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleNav(); } });
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      links.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }));
+
+    /* ── Footer year ── */
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  })();
+  </script>
 </body>
 </html>
