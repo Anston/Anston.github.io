@@ -198,6 +198,14 @@ section { padding: 7rem 0; }
   background: rgba(85,187,255,0.06);
 }
 
+/* ─── Hero logo ─── */
+.hero-logo {
+  height: 52px;
+  width: auto;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
 /* ─── Hero ─── */
 #hero {
   position: relative;
