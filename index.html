@@ -23,6 +23,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" data-text="About">About</a></li>
         <li><a href="#experience" data-text="Experience">Experience</a></li>
+        <li><a href="#blog" data-text="Blog">Blog</a></li>
         <li><a href="#contact" data-text="Contact">Contact</a></li>
         <li><a href="assets/SHAWN_ANSTON_RESUME.pdf" target="_blank" rel="noopener" class="nav-resume" aria-label="Resume (opens in new tab)">Resume ↗</a></li>
       </ul>
@@ -221,6 +222,34 @@
     </div>
   </section>
 
+  <!-- ─── BLOG ─── -->
+  <section id="blog">
+    <div class="container">
+      <div class="blog-header">
+        <div class="section-label"><span>Blog</span></div>
+        <div class="blog-toggle-row">
+          <h2 class="section-heading">Thoughts from the void</h2>
+          <label class="blog-toggle-label" title="Toggle blog visibility">
+            <input type="checkbox" id="blogToggle" checked>
+            <span class="toggle-track"></span>
+            <span id="blogToggleText">Enabled</span>
+          </label>
+        </div>
+      </div>
+      <div id="blogPlanets" class="blog-planets-wrapper" aria-live="polite">
+        <!-- Planets rendered by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog post modal -->
+  <div id="blogModal" class="blog-modal" role="dialog" aria-modal="true" aria-labelledby="blogModalTitle" tabindex="-1">
+    <div class="blog-modal-inner">
+      <button class="blog-modal-close" id="blogModalClose" aria-label="Close post">&times;</button>
+      <div id="blogModalContent"></div>
+    </div>
+  </div>
+
   <!-- ─── CONTACT ─── -->
   <section id="contact">
     <div class="container">
@@ -286,6 +315,12 @@
   <script>
   (() => {
     'use strict';
+
+    /* ══════════════════════════════════════════════════
+       BLOG MASTER SWITCH — set to false to hide the entire
+       blog section without removing any code.
+    ══════════════════════════════════════════════════ */
+    const BLOG_SECTION_ENABLED = true;
 
     /* ── Typed text ── */
     const phrases = [
@@ -510,6 +545,301 @@
 
     /* ── Footer year ── */
     document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    /* ══════════════════════════════════════════════════
+       BLOG — Planet-style blog section
+       Master switch is at the top of this script.
+       Each post has its own `enabled` flag for per-post control.
+    ══════════════════════════════════════════════════ */
+
+    const BLOG_POSTS = [
+      {
+        id: 'mainframe-to-cloud',
+        enabled: true,
+        title: 'From Mainframe to Cloud: Hard-Won Lessons from the Migration Trenches',
+        date: '2026-04-09',
+        content: `
+<p>After nearly a decade working in the mainframe world and then spending several years leading cloud migration projects, I've accumulated a collection of lessons that nobody tells you before you start. This post is the one I wish someone had handed me before my first migration kickoff meeting.</p>
+
+<h2>The Mainframe Isn't the Enemy</h2>
+<p>The first misconception I encounter on almost every migration engagement is the idea that the mainframe is old, fragile, and must be replaced as quickly as possible. In reality, the mainframe is often the most reliable component in the entire ecosystem. It has been running 24/7 for decades. It has survived hardware failures, power outages, and organizational reorgs. Before you move anything off of it, you need to understand <em>why</em> it still works.</p>
+<p>When I started the IMS-to-DB2 migration at my organization, we assumed the IMS database structures were arbitrary legacy decisions. Three months in, we discovered that some of those hierarchical structures encoded critical business logic about inventory ownership that had no documentation anywhere else. If we had moved fast without deep analysis, we would have broken a system that had been working perfectly for over fifteen years.</p>
+
+<h2>The Business Logic Is Hidden in the COBOL</h2>
+<p>Modern cloud migration tools love to tell you they can "automatically lift and shift" your workloads. For COBOL, this is almost never the whole story. COBOL programs written in the 1990s and 2000s contain decades of undocumented business rules. These rules live in:</p>
+<ul>
+  <li>Conditional branches that haven't been triggered in years but are still valid edge cases</li>
+  <li>Hardcoded table values that encode business categories your analysts no longer remember</li>
+  <li>File layout assumptions baked into <code>REDEFINES</code> clauses</li>
+  <li>Numeric precision behaviors that differ between COBOL and Java or Python</li>
+</ul>
+<p>My recommendation: before migrating any batch program, run it in parallel with the new system for at least one full fiscal quarter. You will catch discrepancies you never could have anticipated during design.</p>
+
+<h2>JCL Is Your Dependency Map</h2>
+<p>One of the most underrated migration tools available to any mainframe engineer is the existing JCL. When I was planning our migration of batch workloads to AWS Batch, I started by mapping every JCL job stream using CA7. What I found was a complex dependency web that the cloud architecture team had no visibility into. Jobs that looked independent were actually chained through GDG datasets and step condition codes in ways that weren't obvious.</p>
+<p>I built a simple REXX script that parsed JCLLIB members and output a dependency graph. That graph became the foundational document for our migration sequencing. Cloud architects finally understood why certain workloads could only move after others.</p>
+
+<h2>Performance Baselines Are Non-Negotiable</h2>
+<p>Before you cut over any process, you need a clear, signed-off performance baseline for the mainframe version. Elapsed time, CPU consumption, I/O counts, record volumes — capture all of it. After migration, every stakeholder will have a different memory of how fast the old system was. The baseline is your only source of truth.</p>
+<p>During our Order Management migration, we had a DB2 stored procedure that ran in under two seconds on the mainframe. The initial Java microservices implementation took twelve seconds due to N+1 query patterns that weren't visible until load testing. Without that baseline, we might have shipped it and nobody would have had the numbers to push back.</p>
+
+<h2>The Human Side Is Harder Than the Technical Side</h2>
+<p>The hardest part of every migration I've led wasn't the code. It was getting the offshore Mainframe team, the onsite cloud architects, and the business stakeholders to agree on what "done" meant. Each group had a different definition of success.</p>
+<p>What worked for us was establishing a shared Definition of Done document early, with acceptance criteria that all three groups signed off on. It sounds simple. It is simple. But most teams skip it and pay for it later in scope disputes and go-live delays.</p>
+
+<h2>Don't Abandon the Mainframe Mindset</h2>
+<p>The Mainframe gave us something valuable: an obsession with reliability, data integrity, and operational rigor. ACID transactions, detailed audit trails, structured error handling — these weren't features, they were foundations. When designing cloud replacements, bring that mindset with you. The cloud gives you elasticity and speed; the mainframe gives you discipline. The best cloud systems combine both.</p>
+
+<h2>Final Thought</h2>
+<p>Cloud migration from mainframe is not a technology problem. It is a knowledge preservation problem. The challenge is capturing thirty years of business logic, operational knowledge, and hard-won engineering decisions before they walk out the door with the last mainframe developer. Do that well, and the technical migration becomes straightforward. Skip it, and no amount of cloud tooling will save you.</p>
+
+<blockquote>The goal isn't to replace the mainframe. The goal is to carry everything the mainframe taught you into whatever comes next.</blockquote>
+        `
+      }
+    ];
+
+    /* ── Planet rendering utilities ── */
+    function countWords(htmlStr) {
+      return htmlStr.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+    }
+
+    /* Pre-compute and cache word counts on each post object */
+    BLOG_POSTS.forEach(post => { post._wordCount = countWords(post.content); });
+
+    function planetSize(wordCount) {
+      const MIN_SIZE = 80, MAX_SIZE = 165, MIN_W = 80, MAX_W = 900;
+      const clamped = Math.max(MIN_W, Math.min(wordCount, MAX_W));
+      return Math.round(MIN_SIZE + (clamped - MIN_W) / (MAX_W - MIN_W) * (MAX_SIZE - MIN_SIZE));
+    }
+
+    /* Seeded pseudo-random (mulberry32) for consistent planet appearance */
+    function seededRng(seed) {
+      let s = seed >>> 0;
+      return function() {
+        s += 0x6d2b79f5;
+        let t = s;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function strHash(str) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = (h * 0x01000193) >>> 0;
+      }
+      return h;
+    }
+
+    /* Draw a planet onto a canvas using a seeded random */
+    function drawPlanet(canvas, postId, diameter) {
+      const ctx = canvas.getContext('2d');
+      const R = diameter / 2;
+      const cx = R, cy = R;
+      const rng = seededRng(strHash(postId));
+
+      /* ── Palette themes ── */
+      const themes = [
+        { base: ['#2a6fbf', '#1a3d80', '#0d2450'],   bands: ['#3d8fd6', '#1e57a8', '#4ab0f5', '#0a1e4a'] }, // blue gas giant
+        { base: ['#c4622a', '#8c3515', '#5a1e08'],   bands: ['#e07840', '#a84020', '#d44a14', '#7a2808'] }, // rust/rocky
+        { base: ['#3d9e6e', '#1e5c40', '#0c3024'],   bands: ['#50c484', '#278054', '#6cd896', '#154530'] }, // teal/ocean
+        { base: ['#9b4fbd', '#5e2478', '#3a0f4f'],   bands: ['#c070e0', '#7030a0', '#d090f0', '#4a1860'] }, // purple nebula
+        { base: ['#c8a832', '#8a6810', '#5a4208'],   bands: ['#e8c840', '#a88820', '#f0d060', '#786010'] }, // golden/sandy
+        { base: ['#3a7abf', '#1c4a80', '#0a2850'],   bands: ['#6080e0', '#2040a0', '#8090f0', '#102060'] }, // deep blue ice
+        { base: ['#bf4a3a', '#801c18', '#500c08'],   bands: ['#e06050', '#a03028', '#d04040', '#702018'] }, // volcanic red
+        { base: ['#4abfbf', '#1a7878', '#084040'],   bands: ['#60e0e0', '#2090a0', '#80d0d8', '#105060'] }, // cyan/teal
+      ];
+      const theme = themes[Math.floor(rng() * themes.length)];
+
+      /* Base planet gradient */
+      const baseGrad = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.05, cx, cy, R);
+      baseGrad.addColorStop(0,   theme.base[0]);
+      baseGrad.addColorStop(0.5, theme.base[1]);
+      baseGrad.addColorStop(1,   theme.base[2]);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R - 1, 0, Math.PI * 2);
+      ctx.clip();
+
+      ctx.fillStyle = baseGrad;
+      ctx.fill();
+
+      /* Atmospheric bands */
+      const numBands = 4 + Math.floor(rng() * 5);
+      for (let i = 0; i < numBands; i++) {
+        const y   = rng() * diameter;
+        const h   = (rng() * 0.12 + 0.03) * diameter;
+        const col = theme.bands[Math.floor(rng() * theme.bands.length)];
+        const alpha = rng() * 0.35 + 0.1;
+        ctx.beginPath();
+        ctx.ellipse(cx, y, R, h, 0, 0, Math.PI * 2);
+        ctx.fillStyle = col + Math.round(alpha * 255).toString(16).padStart(2, '0');
+        ctx.fill();
+      }
+
+      /* Spots / storms */
+      const numSpots = Math.floor(rng() * 4);
+      for (let i = 0; i < numSpots; i++) {
+        const sx = (rng() * 0.7 + 0.15) * diameter;
+        const sy = (rng() * 0.7 + 0.15) * diameter;
+        const sr = (rng() * 0.07 + 0.04) * diameter;
+        const col = theme.bands[Math.floor(rng() * theme.bands.length)];
+        const sGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr);
+        sGrad.addColorStop(0,   col + 'cc');
+        sGrad.addColorStop(1,   col + '00');
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, sr, sr * 0.65, rng() * Math.PI, 0, Math.PI * 2);
+        ctx.fillStyle = sGrad;
+        ctx.fill();
+      }
+
+      /* Specular highlight */
+      const hiGrad = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.35, 0, cx - R * 0.15, cy - R * 0.15, R * 0.55);
+      hiGrad.addColorStop(0,   'rgba(255,255,255,0.22)');
+      hiGrad.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+      hiGrad.addColorStop(1,   'rgba(255,255,255,0)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, R - 1, 0, Math.PI * 2);
+      ctx.fillStyle = hiGrad;
+      ctx.fill();
+
+      ctx.restore();
+
+      /* Optional ring system (30% chance) */
+      const hasRing = rng() < 0.3;
+      if (hasRing) {
+        const ringRng  = seededRng(strHash(postId + '_ring'));
+        const ringCol  = theme.bands[Math.floor(ringRng() * theme.bands.length)];
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(Math.PI * 0.18);
+        ctx.scale(1, 0.28);
+        ctx.beginPath();
+        ctx.arc(0, 0, R * 1.62, 0, Math.PI * 2);
+        ctx.strokeStyle = ringCol + '55';
+        ctx.lineWidth   = R * 0.22;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, R * 1.35, 0, Math.PI * 2);
+        ctx.strokeStyle = ringCol + '33';
+        ctx.lineWidth   = R * 0.12;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    /* ── Render blog planets ── */
+    function renderBlog() {
+      if (!BLOG_SECTION_ENABLED) {
+        document.getElementById('blog').style.display = 'none';
+        return;
+      }
+
+      const wrapper = document.getElementById('blogPlanets');
+      wrapper.innerHTML = '';
+
+      const activePosts = BLOG_POSTS.filter(p => p.enabled);
+      if (activePosts.length === 0) {
+        wrapper.innerHTML = '<p style="color:var(--text-muted);font-family:var(--mono);font-size:0.82rem;">No posts yet. Check back soon.</p>';
+        return;
+      }
+
+      activePosts.forEach(post => {
+        const wordCount = post._wordCount;
+        const diam = planetSize(wordCount);
+        const date = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        const item = document.createElement('div');
+        item.className = 'blog-planet-item reveal';
+
+        const btn = document.createElement('button');
+        btn.className = 'blog-planet-btn';
+        btn.setAttribute('aria-label', `Read: ${post.title}`);
+        btn.dataset.postId = post.id;
+
+        const cvs = document.createElement('canvas');
+        cvs.className = 'blog-planet-canvas';
+        cvs.width  = diam;
+        cvs.height = diam;
+        cvs.style.width  = diam + 'px';
+        cvs.style.height = diam + 'px';
+
+        btn.appendChild(cvs);
+        drawPlanet(cvs, post.id, diam);
+
+        const meta = document.createElement('div');
+        meta.className = 'blog-planet-meta';
+        meta.innerHTML = `
+          <div class="blog-planet-title">${post.title}</div>
+          <div class="blog-planet-date">${date}</div>
+          <div class="blog-planet-words">${wordCount} words</div>
+        `;
+
+        item.appendChild(btn);
+        item.appendChild(meta);
+        wrapper.appendChild(item);
+
+        btn.addEventListener('click', () => openPost(post));
+      });
+
+      /* re-run reveal on new elements */
+      wrapper.querySelectorAll('.reveal').forEach(el => {
+        el.classList.remove('reveal');
+        void el.offsetWidth; // force reflow to restart CSS animation
+        el.classList.add('reveal');
+        io.observe(el);
+      });
+    }
+
+    /* ── Modal ── */
+    const modal       = document.getElementById('blogModal');
+    const modalClose  = document.getElementById('blogModalClose');
+    const modalContent = document.getElementById('blogModalContent');
+
+    function openPost(post) {
+      const wordCount = post._wordCount;
+      const date = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      modalContent.innerHTML = `
+        <div class="blog-post-header">
+          <span class="blog-post-label">Blog Post</span>
+          <h1 class="blog-post-title" id="blogModalTitle">${post.title}</h1>
+          <div class="blog-post-meta">
+            <span>${date}</span>
+            <span>${wordCount} words</span>
+          </div>
+        </div>
+        <div class="blog-post-body">${post.content}</div>
+      `;
+      modal.classList.add('open');
+      modal.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+    /* ── Blog toggle switch ── */
+    const blogToggle     = document.getElementById('blogToggle');
+    const blogToggleText = document.getElementById('blogToggleText');
+    const blogSection    = document.getElementById('blog');
+
+    blogToggle.addEventListener('change', () => {
+      const enabled = blogToggle.checked;
+      blogToggleText.textContent = enabled ? 'Enabled' : 'Disabled';
+      blogSection.classList.toggle('blog-hidden', !enabled);
+    });
+
+    /* ── Init blog ── */
+    renderBlog();
   })();
   </script>
 </body>
