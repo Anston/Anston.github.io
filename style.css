@@ -84,13 +84,14 @@ ul { list-style: none; }
   justify-content: space-between;
 }
 .nav-logo {
-  font-family: var(--mono);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
 }
-.logo-bracket { opacity: 0.5; }
+.nav-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
 .nav-links {
   display: flex;
   align-items: center;
