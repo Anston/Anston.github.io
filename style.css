@@ -338,6 +338,7 @@ section { padding: 7rem 0; }
   border-top: 1px solid var(--border);
 }
 .stat { display: flex; flex-direction: column; }
+.stat-row { display: flex; align-items: baseline; }
 .stat-number {
   font-size: 2.5rem;
   font-weight: 900;
